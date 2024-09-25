@@ -10,12 +10,14 @@ import {
   Query,
 } from '@nestjs/common';
 import { ExpensesService } from './expenses.service';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Expences')
 @Controller('expenses')
 export class ExpensesController {
   constructor(private readonly expensesService: ExpensesService) {}
 
-  @Get()
+  @Get('/')
   async listExpenses(
     @Query('lastWeek') lastWeek?: string,
     @Query('lastMonth') lastmonth?: string,
@@ -41,7 +43,7 @@ export class ExpensesController {
     }
   }
 
-  @Post()
+  @Post('/create')
   async createExpense(@Body() newExpense: any): Promise<any> {
     try {
       return this.expensesService.createExpense(newExpense);
@@ -50,16 +52,16 @@ export class ExpensesController {
     }
   }
 
-  @Put()
-  async updateExpense(@Body() existingExpense: any): Promise<any> {
+  @Put('/update/:idExpense')
+  async updateExpense(@Param('idExpense')idExpense:string, @Body() existingExpense: any): Promise<any> {
     try {
-      return this.expensesService.updateExpense(existingExpense);
+      return this.expensesService.updateExpense(idExpense,existingExpense);
     } catch (error) {
       throw new BadRequestException(error);
     }
   }
 
-  @Delete()
+  @Delete('/delete/:idExpense')
   async deleteExpense(@Param('idExpense') idExpense: string): Promise<any> {
     try {
       return this.expensesService.deleteExpense(idExpense);
